@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <title></title>
+        <script type="text/javascript" src="d3/d3.v3.js"></script>
+        <style>
+            .axis path,
+            .axis line {
+                fill: none;
+                stroke: black;
+                shape-rendering: crispEdges;
+            }
+
+            .axis text {
+                font-family: sans-serif;
+                font-size: 11px;
+            }
+        </style>
+</head>
+<body>
+        <script type="text/javascript">
+                var w = 250; 
+                var h = 250; 
+                var padding = 30; 
+                var rectangle_coords = []; 
+
+                for(var cnt = 0; cnt < 100; cnt++) { 
+                        rectangle_coords[cnt] = ( [Math.floor(Math.random()*250)+10, 
+                                                   Math.floor(Math.random()*250)+10]); } 
+
+                xScale = d3.scale.linear() 
+                           .domain([0, d3.max(rectangle_coords, 
+                                              function(d) { return d[0]; })]) 
+                           .range([padding, w - padding]); 
+
+                yScale = d3.scale.linear() 
+                           .domain([0, d3.max(rectangle_coords, 
+                                              function(d) { return d[1]; })])
+                           .range([h - padding, padding]);
+
+                sizeScale = d3.scale.linear()
+                              .domain([0, d3.max(rectangle_coords,
+                                                 function(d) {return d[0];})])
+                              .range([1, 5]);
+
+                average = d3.mean(rectangle_coords,
+                                  function(d) { return d[0];});
+
+                min_data = d3.min(rectangle_coords,
+                                  function(d) { return d[0];});
+
+                var min_data = w;
+                var min_data_index = 0;
+               
+                for (var rect_cnt = 0; rect_cnt < rectangle_coords.length; rect_cnt++){
+                
+                        if (rectangle_coords[rect_cnt][1] < min_data) {
+                            min_data_index = rect_cnt;
+                            min_data = rectangle_coords[rect_cnt][1]; 
+                        } 
+                }
+
+                var xAxis = d3.svg.axis()
+                                  .scale(xScale)
+                                  .orient("bottom")
+                                  .ticks(5); 
+
+                var yAxis = d3.svg.axis()
+                                  .scale(yScale)
+                                  .orient("left")
+                                  .ticks(5); 
+
+                var svg = d3.select("body")
+                            .append("svg")
+                            .attr("width", w)
+                            .attr("height", h);
+
+                rectangles = svg.selectAll("rect")
+                                .data(rectangle_coords)
+                                .enter()
+                                .append("rect")
+                                .attr("x", function(d) {
+                                    return xScale(d[0]);
+                                })
+                                .attr("y", function(d) {
+                                    return yScale(d[1]);
+                                })
+                                .attr("width", function(d) {
+                                    return sizeScale(d[0]);
+                                })
+                                .attr("height", function(d) {
+                                    return sizeScale(d[0]);
+                                })
+                                .attr("style", function(d){
+                                        if (d[0] > average) {
+                                            return("stroke:rgb(0, 255, 0); fill-opacity: 0;");
+                                        } 
+                                        else {
+                                            return("stroke:rgb(0 , 0, 255); fill-opacity: 0;");
+                                        }
+                                })
+
+
+            
+                svg.append("text")
+                        .attr("x", (w / 2))             
+                        .attr("y", 15 )
+                        .attr("text-anchor", "middle")  
+                        .style("font-size", "16px") 
+                        .style("text-decoration", "underline")  
+                        .text("plivesey3");
+                
+                if(rectangle_coords[min_data_index][0] > (w - 80)){
+                    minTextX = w - 80;
+                    console.log("minnnni " + minTextX)
+                } else {
+                    minTextX = rectangle_coords[min_data_index][0];
+                }
+
+                svg.append("text")
+                        .attr("x", minTextX)
+                        .attr("y", h - rectangle_coords[min_data_index][1] - padding)
+                        .style("font-size", "16px") 
+                        .text("Min Y: " + min_data);
+
+                svg.append("g")
+                        .attr("class", "axis")
+                        .attr("transform", "translate(0," + (h - padding) + ")")
+                        .call(xAxis);
+
+                svg.append("g")
+                        .attr("class", "axis")
+                        .attr("transform", "translate(" + padding + ",0)")
+                        .call(yAxis);
+
+                console.log(h);
+                console.log(min_data);
+                console.log(rectangle_coords[min_data_index])
+    
+        </script>
+
+</body>
+</html>
