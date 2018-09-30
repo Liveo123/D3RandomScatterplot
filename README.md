@@ -1,6 +1,8 @@
 # D3RandomScatterplot
 A Javascript D3 chart plotting 100 random coordinates
 
+![D3 Scatterplot of 100 random numbers](https://github.com/Liveo123/D3RandomScatterplot/blob/master/d3plot.png)
+
     A folder named d3 containing file d3.v3.min.js (download)
 
     index.html : When run in a browser, it should display a scatterplot with the following specifications:
